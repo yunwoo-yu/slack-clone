@@ -18,5 +18,13 @@
       "@utils/*": ["utils/*"],
       "@typings/*": ["typings/*"]
     }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node",
+      "target": "ES5",
+      "esModuleInterop": true
+    }
   }
 }

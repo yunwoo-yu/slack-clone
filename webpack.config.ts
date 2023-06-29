@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack, { Configuration as WebpackConfiguration } from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 
 interface Configuration extends WebpackConfiguration {
@@ -38,6 +39,11 @@ const config: Configuration = {
             '@babel/preset-react',
             '@babel/preset-typescript',
           ],
+          env: {
+            development: {
+              plugins: [require.resolve('react-refresh/babel')],
+            },
+          },
         },
         exclude: path.join(__dirname, 'node__modules'),
       },
@@ -59,16 +65,24 @@ const config: Configuration = {
     publicPath: '/dist/',
   },
   devServer: {
-    historyApiFallback: true,
-    port: 3090,
+    historyApiFallback: true, // router 에 필요한 설정
+    port: 3090, // 포트 설정
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
     proxy: {
       '/api/': {
-        target: 'http://localhost:3095',
+        target: 'http://localhost:0395',
         changeOrigin: true,
-        ws: true,
       },
     },
   },
 };
+
+if (isDevelopment && config.plugins) {
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new ReactRefreshWebpackPlugin());
+}
+if (!isDevelopment && config.plugins) {
+}
+
+export default config;
