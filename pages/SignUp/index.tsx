@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import useInput from '@hooks/useInput';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -30,27 +30,22 @@ const SignUp = () => {
   );
 
   const onSubmit = useCallback(
-    (e: FormEvent) => {
+    async (e: FormEvent) => {
       e.preventDefault();
       if (!mismatchError && nickname) {
         console.log('서버로 회원가입하기');
         setSignUpError('');
         setSignUpSuccess(false);
-        axios
-          .post('/api/users', {
-            email,
-            nickname,
-            password,
-          })
-          .then((response) => {
-            console.log(response);
-            setSignUpSuccess(true);
-          })
-          .catch((error) => {
-            console.log(error.response);
-            setSignUpError(error.response.data);
-          })
-          .finally(() => {});
+
+        try {
+          const response = await axios.post('/api/users', { email, nickname, password });
+          console.log(response);
+          setSignUpSuccess(true);
+        } catch (error: any) {
+          console.log(error.response);
+          setSignUpError(error.response.data);
+        } finally {
+        }
       }
     },
     [email, nickname, password, passwordCheck, mismatchError],
