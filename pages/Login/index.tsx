@@ -9,7 +9,14 @@ import useSWR from 'swr';
 // import useSWR from 'swr';
 
 const LogIn = () => {
-  const { data, error } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+    // dedupingInterval: 100000, 호출은 되지만 설정된 시간만큼은 캐시되어 있는 값을 불러옵니다. default = 2000
+    // focusThrottleInterval : 3000, 포커스 시 재 호출은 되지만 설정한 시간 동안은 포커스 되어도 호출 하지 않도록 하는 옵션 default = 5000
+    // errorRetryInterval: 알수 없는 이유로 에러가 났을 때 재요청 하도록 하는 옵션 default = 5000,
+    // loadingTimeout: 요청에 대한 응답이 이 시간만큼 걸릴 경우 뭔가 조치를 취할 수 있다 default = 3000
+    // errorRetryCount: 서버 문제 시 재 요청을 몇번 보낼건지,
+    // revalidateOnFocus focus 시 재요청 보낼건지
+  });
 
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
@@ -27,7 +34,7 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          // revalidate();
+          mutate();
         })
         .catch((error) => {
           setLogInError(error.response?.status === 401);
