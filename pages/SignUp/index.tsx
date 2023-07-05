@@ -14,7 +14,7 @@ const SignUp = () => {
   const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
-  const { data } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data } = useSWR('/api/users', fetcher);
 
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ const SignUp = () => {
   }
 
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate to="/workspace/sleact/channel/일반" />;
   }
 
   return (

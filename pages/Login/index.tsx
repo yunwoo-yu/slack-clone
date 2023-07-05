@@ -27,7 +27,7 @@ const LogIn = () => {
       setLogInError(false);
       axios
         .post(
-          'http://localhost:3095/api/users/login',
+          '/api/users/login',
           { email, password },
           {
             withCredentials: true,
@@ -48,7 +48,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate to="/workspace/sleact/channel/일반" />;
   }
 
   // console.log(error, userData);
