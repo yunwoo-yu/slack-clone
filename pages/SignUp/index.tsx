@@ -14,7 +14,7 @@ const SignUp = () => {
   const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data } = useSWR('http://localhost:3095/api/users', fetcher);
 
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,13 +41,16 @@ const SignUp = () => {
         setSignUpSuccess(false);
 
         try {
-          const response = await axios.post('/api/users', { email, nickname, password });
+          const response = await axios.post('/api/users', {
+            email,
+            nickname,
+            password,
+          });
           console.log(response);
           setSignUpSuccess(true);
         } catch (error: any) {
           console.log(error.response);
           setSignUpError(error.response.data);
-        } finally {
         }
       }
     },
