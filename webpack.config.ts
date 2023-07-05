@@ -85,7 +85,7 @@ if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new ReactRefreshWebpackPlugin());
 }
-if (!isDevelopment && config.plugins) {
-}
+// if (!isDevelopment && config.plugins) {
+// }
 
 export default config;
