@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import useInput from '@hooks/useInput';
+import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import useSWR from 'swr';
 
 const SignUp = () => {
   const [email, onChangeEmail] = useInput('');
@@ -12,6 +14,7 @@ const SignUp = () => {
   const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
 
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +53,14 @@ const SignUp = () => {
     },
     [email, nickname, password, passwordCheck, mismatchError],
   );
+
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
+
+  if (data) {
+    return <Navigate replace to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
