@@ -1,10 +1,23 @@
+import ChannelList from '@components/ChannelList';
+import ChatBox from '@components/ChatBox';
 import styled from '@emotion/styled';
-import React from 'react';
+import useInput from '@hooks/useInput';
+import React, { FormEvent } from 'react';
 
 const Channel = () => {
+  const [chat, onChangeChat] = useInput('');
+
+  const onSubmitForm = (e: FormEvent) => {
+    e.preventDefault();
+    console.log(e);
+  };
+
   return (
     <>
       <Header>채널</Header>
+      <ChannelList />
+      <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
+
       <div>로그인 하신것을 축하드려요!</div>
     </>
   );
