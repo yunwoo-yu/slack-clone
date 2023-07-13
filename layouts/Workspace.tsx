@@ -33,8 +33,6 @@ const Workspace = () => {
     dedupingInterval: 2000,
   });
 
-  const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
-
   const onLogout = async () => {
     await axios.post('/api/users/logout', null, {
       withCredentials: true,

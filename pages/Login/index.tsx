@@ -9,7 +9,7 @@ import useSWR from 'swr';
 // import useSWR from 'swr';
 
 const LogIn = () => {
-  const { data, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, mutate } = useSWR('/api/users', fetcher, {
     // dedupingInterval: 100000, 호출은 되지만 설정된 시간만큼은 캐시되어 있는 값을 불러옵니다. default = 2000
     // focusThrottleInterval : 3000, 포커스 시 재 호출은 되지만 설정한 시간 동안은 포커스 되어도 호출 하지 않도록 하는 옵션 default = 5000
     // errorRetryInterval: 알수 없는 이유로 에러가 났을 때 재요청 하도록 하는 옵션 default = 5000,
