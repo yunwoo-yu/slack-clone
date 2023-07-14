@@ -4,7 +4,7 @@ import { Button, Input, Label } from '@pages/SignUp';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { FC, FormEvent, useCallback } from 'react';
+import React, { FC, FormEvent } from 'react';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
@@ -23,28 +23,25 @@ const InviteChannelModal: FC<Props> = ({ show, onCloseModal, setShowInviteChanne
     fetcher,
   );
 
-  const onInviteMember = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-      if (!newMember || !newMember.trim()) {
-        return;
-      }
-      axios
-        .post(`/api/workspaces/${workspace}/channels/${channel}/members`, {
-          email: newMember,
-        })
-        .then(() => {
-          mutateMembers();
-          setShowInviteChannelModal(false);
-          setNewMember('');
-        })
-        .catch((error) => {
-          console.dir(error);
-          toast.error(error.response?.data, { position: 'bottom-center' });
-        });
-    },
-    [newMember],
-  );
+  const onInviteMember = (e: FormEvent) => {
+    e.preventDefault();
+    if (!newMember || !newMember.trim()) {
+      return;
+    }
+    axios
+      .post(`/api/workspaces/${workspace}/channels/${channel}/members`, {
+        email: newMember,
+      })
+      .then(() => {
+        mutateMembers();
+        setShowInviteChannelModal(false);
+        setNewMember('');
+      })
+      .catch((error) => {
+        console.dir(error);
+        toast.error(error.response?.data, { position: 'bottom-center' });
+      });
+  };
 
   return (
     <Modal show={show} onCloseModal={onCloseModal}>
