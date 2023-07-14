@@ -43,7 +43,7 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [workspace, newMember],
+    [workspace, newMember, mutateMember, setNewMember, setShowInviteWorkspaceModal],
   );
 
   return (
