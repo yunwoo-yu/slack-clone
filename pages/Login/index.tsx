@@ -2,7 +2,7 @@ import useInput from '@hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer } from '@pages/SignUp/';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { FormEvent, useCallback, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 
@@ -21,27 +21,25 @@ const LogIn = () => {
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const onSubmit = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        '/api/users/login',
+        { email, password },
+        {
+          withCredentials: true,
+        },
+      );
+
+      mutate();
       setLogInError(false);
-      axios
-        .post(
-          '/api/users/login',
-          { email, password },
-          {
-            withCredentials: true,
-          },
-        )
-        .then((response) => {
-          mutate(response.data, false);
-        })
-        .catch((error) => {
-          setLogInError(error.response?.status === 401);
-        });
-    },
-    [email, password],
-  );
+    } catch (error: any) {
+      setLogInError(error.response?.status === 401);
+      setLogInError(true);
+    }
+  };
 
   if (data === undefined) {
     return <div>로딩중...</div>;

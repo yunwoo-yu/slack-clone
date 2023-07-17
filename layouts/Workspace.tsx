@@ -1,10 +1,15 @@
+import ChannelList from '@components/ChannelList';
 import CreateChannelModal from '@components/CreateChannelModal';
+import DMList from '@components/DMList';
+import InviteChannelModal from '@components/InviteChannelModal';
 import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
 import Menu from '@components/Menu';
 import Modal from '@components/Modal';
 import styled from '@emotion/styled';
 import useInput from '@hooks/useInput';
+import useSocket from '@hooks/useSocket';
 import { Button, Input, Label } from '@pages/SignUp';
+import { IChannel, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import gravatar from 'gravatar';
@@ -13,11 +18,6 @@ import { Navigate, Outlet, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useSWR from 'swr';
-import { IChannel, IUser } from '@typings/db';
-import InviteChannelModal from '@components/InviteChannelModal';
-import ChannelList from '@components/ChannelList';
-import DMList from '@components/DMList';
-import useSocket from '@hooks/useSocket';
 
 const Workspace = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -26,14 +26,14 @@ const Workspace = () => {
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
   const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
-  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
+  const [newWorkspace, onChangeNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
   const { workspace } = useParams<{ workspace: string }>();
   const { data: userData, mutate } = useSWR<IUser | false>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
-  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
+  // const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
   const [socket, disconnect] = useSocket(workspace);
 
   useEffect(() => {
@@ -138,13 +138,14 @@ const Workspace = () => {
       </Header>
       <WorkspaceWrapper>
         <Workspaces>
-          {userData.Workspaces.map((ws) => {
-            return (
-              <Link key={ws.id} to={`/workspace/${ws.name}/channel/일반`}>
-                <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
-              </Link>
-            );
-          })}
+          {userData &&
+            userData.Workspaces.map((ws) => {
+              return (
+                <Link key={ws.id} to={`/workspace/${ws.name}/channel/일반`}>
+                  <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+                </Link>
+              );
+            })}
           <AddButton onClick={onClickCrateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
