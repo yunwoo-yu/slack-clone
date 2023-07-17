@@ -1,11 +1,11 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
-import Workspace from './Workspace';
 
 const Login = lazy(() => import('@pages/Login'));
 const SignUp = lazy(() => import('@pages/SignUp'));
 const Channel = lazy(() => import('@pages/Channel'));
 const DirectMessage = lazy(() => import('@pages/DirectMessage'));
+const Workspace = lazy(() => import('./Workspace'));
 
 const App = () => {
   return (
