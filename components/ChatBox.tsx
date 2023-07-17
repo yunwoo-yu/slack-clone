@@ -1,7 +1,13 @@
 import styled from '@emotion/styled';
+import { IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
 import autosize from 'autosize';
 
-import React, { KeyboardEvent, useEffect, useRef } from 'react';
+import React, { KeyboardEvent, ReactNode, useEffect, useRef } from 'react';
+import { Mention, MentionsInput, SuggestionDataItem } from 'react-mentions';
+import { useParams } from 'react-router';
+import useSWR from 'swr';
+import gravatar from 'gravatar';
 
 interface Props {
   chat: string;
@@ -12,6 +18,11 @@ interface Props {
 
 const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const { workspace } = useParams();
+  const { data: userData } = useSWR<IUser | false>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
 
   const onKeydownChat = (event: KeyboardEvent) => {
     if (!event.nativeEvent.isComposing && event.key === 'Enter') {
@@ -20,6 +31,23 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
         onSubmitForm(event);
       }
     }
+  };
+
+  const renderSuggestion = (
+    suggestion: SuggestionDataItem,
+    search: string,
+    highlightedDisplay: React.ReactNode,
+    index: number,
+    focused: boolean,
+  ): ReactNode => {
+    if (!memberData) return;
+
+    return (
+      <EachMention focus={focused}>
+        <img src={gravatar.url(memberData[index].email, { s: '20px', d: 'retro' })} alt={memberData[index].nickname} />
+        <span>{highlightedDisplay}</span>
+      </EachMention>
+    );
   };
 
   useEffect(() => {
@@ -37,8 +65,16 @@ const ChatBox = ({ chat, onSubmitForm, onChangeChat, placeholder }: Props) => {
           onChange={onChangeChat}
           onKeyDown={onKeydownChat}
           placeholder={placeholder}
-          ref={textareaRef}
-        />
+          inputRef={textareaRef}
+          allowSuggestionsAboveCursor
+        >
+          <Mention
+            appendSpaceOnAdd
+            trigger="@"
+            data={memberData?.map((v) => ({ id: v.id, display: v.nickname })) || []}
+            renderSuggestion={renderSuggestion}
+          />
+        </MentionsTextarea>
         <Toolbox>
           <SendButton
             className={
@@ -79,10 +115,10 @@ export const Form = styled.form`
   font-size: 15px;
   width: 100%;
   border-radius: 4px;
-  border: 1px solid rgb(29, 28, 29);
+  border: 1px solid rgb(5, 3, 5);
 `;
 
-export const MentionsTextarea = styled.textarea`
+export const MentionsTextarea = styled(MentionsInput)`
   font-family: Slack-Lato, appleLogo, sans-serif;
   font-size: 15px;
   padding: 8px 9px;
