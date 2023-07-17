@@ -17,8 +17,6 @@ const Channel = () => {
       <Header>채널</Header>
       <ChannelList />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
-
-      <div>로그인 하신것을 축하드려요!</div>
     </>
   );
 };
