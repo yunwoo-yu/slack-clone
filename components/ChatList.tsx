@@ -1,10 +1,34 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from '@emotion/styled';
+import { IDM } from '@typings/db';
+import Chat from './Chat';
+import { Scrollbars, positionValues } from 'react-custom-scrollbars-2';
 
-const ChatList = () => {
+interface Props {
+  chatSections: { [key: string]: IDM[] };
+}
+
+const ChatList = ({ chatSections }: Props) => {
+  const scrollbarRef = useRef(null);
+
+  const onScroll = (values: positionValues): void => {};
+
   return (
     <ChatZone>
-      <Section>section</Section>
+      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+        {Object.entries(chatSections).map(([date, chats]) => {
+          return (
+            <Section className={`section-${date}`} key={date}>
+              <StickyHeader>
+                <button>{date}</button>
+              </StickyHeader>
+              {chats.map((chat) => (
+                <Chat key={chat.id} data={chat} />
+              ))}
+            </Section>
+          );
+        })}
+      </Scrollbars>
     </ChatZone>
   );
 };
@@ -18,7 +42,7 @@ export const ChatZone = styled.div`
 `;
 
 export const Section = styled.section`
-  margin-top: 20px;
+  /* margin-top: 20px; */
   border-top: 1px solid #eee;
 `;
 
