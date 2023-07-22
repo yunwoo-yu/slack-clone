@@ -1,21 +1,33 @@
-import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import { IDM } from '@typings/db';
-import Chat from './Chat';
+import React, { RefObject, forwardRef } from 'react';
 import { Scrollbars, positionValues } from 'react-custom-scrollbars-2';
+import Chat from './Chat';
 
 interface Props {
   chatSections: { [key: string]: IDM[] };
+  setSize: (f: (size: number) => number) => Promise<IDM[][] | undefined>;
+  isEmpty: boolean;
+  isReachingEnd: boolean;
 }
 
-const ChatList = ({ chatSections }: Props) => {
-  const scrollbarRef = useRef(null);
+const ChatList = forwardRef<Scrollbars, Props>(({ chatSections, setSize, isEmpty, isReachingEnd }, scrollRef) => {
+  const onScroll = (values: positionValues): void => {
+    if (values.scrollTop === 0 && !isReachingEnd) {
+      setSize((prevSizes) => prevSizes + 1).then(() => {
+        // 스크롤 위치 유지
+        const current = (scrollRef as RefObject<Scrollbars>).current;
 
-  const onScroll = (values: positionValues): void => {};
+        if (current) {
+          current.scrollTop(current.getScrollHeight() - values.scrollHeight);
+        }
+      });
+    }
+  };
 
   return (
     <ChatZone>
-      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+      <Scrollbars autoHide ref={scrollRef} onScrollFrame={onScroll}>
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
             <Section className={`section-${date}`} key={date}>
@@ -31,7 +43,9 @@ const ChatList = ({ chatSections }: Props) => {
       </Scrollbars>
     </ChatZone>
   );
-};
+});
+
+ChatList.displayName = 'ChatList';
 
 export default ChatList;
 
@@ -42,7 +56,7 @@ export const ChatZone = styled.div`
 `;
 
 export const Section = styled.section`
-  /* margin-top: 20px; */
+  margin-top: 20px;
   border-top: 1px solid #eee;
 `;
 
