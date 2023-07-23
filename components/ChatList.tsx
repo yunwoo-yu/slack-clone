@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import { IDM } from '@typings/db';
+import { IChat, IDM } from '@typings/db';
 import React, { RefObject, forwardRef } from 'react';
 import { Scrollbars, positionValues } from 'react-custom-scrollbars-2';
 import Chat from './Chat';
 
 interface Props {
-  chatSections: { [key: string]: IDM[] };
-  setSize: (f: (size: number) => number) => Promise<IDM[][] | undefined>;
+  chatSections: { [key: string]: (IDM | IChat)[] };
+  setSize: (f: (size: number) => number) => Promise<(IDM | IChat)[][] | undefined>;
   isEmpty: boolean;
   isReachingEnd: boolean;
 }

@@ -1,17 +1,17 @@
 import React, { memo, useMemo } from 'react';
 import styled from '@emotion/styled';
 import gravatar from 'gravatar';
-import { IDM } from '@typings/db';
+import { IChat, IDM } from '@typings/db';
 import dayjs from 'dayjs';
 import regexifyString from 'regexify-string';
 import { Link, useParams } from 'react-router-dom';
 
 interface Props {
-  data: IDM;
+  data: IDM | IChat;
 }
 
 const Chat = ({ data }: Props) => {
-  const user = data.Sender;
+  const user = 'Sender' in data ? data.Sender : data.User;
   const date = data.createdAt.toString();
   const { workspace } = useParams();
 
@@ -35,7 +35,7 @@ const Chat = ({ data }: Props) => {
           return <br key={index} />;
         },
       }),
-    [data.content],
+    [data.content, workspace],
   );
 
   return (
