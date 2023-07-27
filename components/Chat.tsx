@@ -20,7 +20,7 @@ const Chat = ({ data }: Props) => {
   const result = useMemo<(string | JSX.Element)[] | JSX.Element>(
     () =>
       data.content.startsWith('uploads\\') || data.content.startsWith('uploads/') ? (
-        <img src={`${BACK_URL}/${data.content}`} style={{ maxHeight: 200 }} />
+        <ChatImage src={`${BACK_URL}/${data.content}`} alt="채팅 이미지" />
       ) : (
         regexifyString({
           pattern: /@\[(.+?)]\((\d+?)\)|\n/g,
@@ -74,4 +74,9 @@ export const ChatWrapper = styled.div`
       height: 36px;
     }
   }
+`;
+
+export const ChatImage = styled.img`
+  max-width: 300px;
+  aspect-ratio: auto 16 / 9;
 `;
