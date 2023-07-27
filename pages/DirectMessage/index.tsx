@@ -146,10 +146,13 @@ const DirectMessage = () => {
     };
   }, [socket, onMessage]);
 
+  useEffect(() => {
+    localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+  }, [workspace, id]);
+
   if (!userData || !myData) {
     return null;
   }
-  console.log(chatData, 'test');
 
   const chatSections = makeSection(chatData ? chatData.flat(1).reverse() : []);
 

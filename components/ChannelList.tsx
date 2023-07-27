@@ -3,8 +3,8 @@ import { IChannel, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
+import EachChannel from './EachChannel';
 
 const ChannelList = () => {
   const { workspace } = useParams<{ workspace?: string }>();
@@ -34,11 +34,7 @@ const ChannelList = () => {
       <div>
         {!channelCollapse &&
           channelData?.map((channel) => {
-            return (
-              <NavLink key={channel.name} to={`/workspace/${workspace}/channel/${channel.name}`}>
-                <span># {channel.name}</span>
-              </NavLink>
-            );
+            return <EachChannel key={channel.id} channel={channel} />;
           })}
       </div>
     </>
